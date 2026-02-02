@@ -1,10 +1,9 @@
-import React from "react";
-import location from "../../../assets/location-merchant.png";
-
+ 
+import location from "../../../assets/location-merchant.png"; 
 const BeMarchent = () => {
   return (
-    <div className="p-6">
-      <div className="hero my-5 bg-[#03373D] rounded-4xl p-20">
+    <div data-aos="zoom-in-up" className="p-6  ">
+      <div className=" my-5 bg-[url('/features/marchent-bg.png')] bg-no-repeat bg-[#03373D] rounded-4xl md:p-20">
         <div className="hero-content flex-col lg:flex-row-reverse">
           <img src={location} className="max-w-sm rounded-lg" />
           <div>
@@ -16,7 +15,10 @@ const BeMarchent = () => {
               with 100% safety of your product. Pathao courier delivers your
               parcels in every corner of Bangladesh right on time.
             </p>
-            <button className="btn btn-primary">Get Started</button>
+             <div className="space-x-2">
+              <button className="btn btn-primary text-slate-700 rounded-full ">Become a Merchant</button>
+              <button className="btn btn-outline rounded-full btn-primary">Earn with ZapShift Courier</button>
+             </div>
           </div>
         </div>
       </div>

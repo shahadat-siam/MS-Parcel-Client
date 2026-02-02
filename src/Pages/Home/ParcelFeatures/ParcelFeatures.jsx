@@ -24,9 +24,9 @@ const features = [
 
 const ParcelFeatures = () => {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-10 space-y-6">
+    <div  className="max-w-4xl mx-auto px-4 py-10 space-y-6">
       {features.map((item) => (
-        <div
+        <div data-aos="zoom-in-up"
           key={item.id}
           className="card bg-base-100 shadow-md hover:shadow-lg transition"
         >
