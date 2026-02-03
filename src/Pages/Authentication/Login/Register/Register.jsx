@@ -1,10 +1,21 @@
 import { useForm } from "react-hook-form"; 
 import { NavLink } from 'react-router';
+import useAuth from "../../../../Hooks/useAuth";
+import SocialLogin from "../../SocialLogin/SocialLogin";
 
 const Register = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
+    const {createUser} = useAuth()
     const onSubmit = data => {
         console.log(data)
+        createUser(data.email, data.password)
+          .then(result => {
+            console.log(result.user)
+          })
+          .catch(error => {
+            console.log(error)
+          })
+
     }
 
     return (
@@ -40,6 +51,7 @@ const Register = () => {
 
                 </fieldset>
             </form>
+            <div className="mt-1"> <SocialLogin/></div>
         </div>
     );
 };
