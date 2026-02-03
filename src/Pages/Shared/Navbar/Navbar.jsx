@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router';
 import MsParcelLogo from '../MsParcelLogo/MsParcelLogo';
+import { GoArrowUpRight } from 'react-icons/go';
 
 const Navbar = () => {
     const navItems = <>
@@ -21,7 +22,7 @@ const Navbar = () => {
                     {navItems}
                 </ul>
                 </div>
-                <a className="btn btn-ghost text-xl">
+                <a className="">
                     <MsParcelLogo/>
                 </a>
             </div>
@@ -30,8 +31,10 @@ const Navbar = () => {
                {navItems}
                 </ul>
             </div>
-            <div className="navbar-end">
-                <a className="btn">Button</a>
+            <div className="navbar-end gap-2">
+                <NavLink to={'login'}><a className="btn btn-outline btn-primary rounded-md text-slate-700">Sign in</a></NavLink>
+                <NavLink to={'signup'}><a className="btn bg-primary rounded-md">Sign up</a></NavLink>
+                <a className="btn btn-circle text-xl bg-black text-primary"><GoArrowUpRight /></a>
             </div>
         </div>
     );

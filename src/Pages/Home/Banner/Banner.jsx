@@ -8,16 +8,15 @@ const Banner = () => {
   return (
     <Carousel autoPlay={true} infiniteLoop={true} showThumbs={false}>
       <div>
-        <img src={Banner1} />
-        <p className="legend">Legend 1</p>
+        <img src={Banner1} /> 
+        
       </div>
       <div>
-        <img src={Banner2} />
-        <p className="legend">Legend 2</p>
+        <img src={Banner2} /> 
       </div>
       <div>
         <img src={Banner3} />
-        <p className="legend">Legend 3</p>
+        {/* <p className="legend">Legend 3</p> */}
       </div>
     </Carousel>
   );
