@@ -44,7 +44,7 @@ const AvailableArea = ({ serviceCenter }) => {
   };
 
   return (
-    <div className="mx-auto relative my-8" style={{ width: "80%" }}>
+    <div className="mx-auto relative my-8" style={{ width: "90%" }}>
       
       {/* 🔍 Search Box */}
      <div className="absolute top-2 left-1/2 -translate-x-1/2 z-[1000] w-[70%] md:w-[30%]">
