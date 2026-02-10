@@ -3,25 +3,20 @@ import toast, { Toaster } from "react-hot-toast";
 import warehouseData from "./wearHouseData";
 import Swal from "sweetalert2";
 import useAuth from "../../Hooks/useAuth";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 const generateTrackingId = () => {
-  const date = new Date()
-    .toISOString()
-    .slice(0, 10)
-    .replace(/-/g, "");
+  const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
 
-  const random = Math.random()
-    .toString(36)
-    .substring(2, 7)
-    .toUpperCase();
+  const random = Math.random().toString(36).substring(2, 7).toUpperCase();
 
   return `PRC-${date}-${random}`;
 };
 
-
 const SendParcel = () => {
   const { register, handleSubmit, watch, reset } = useForm();
-  const {user} = useAuth()
+  const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
 
   const parcelType = watch("type");
   const senderRegion = watch("sender_region");
@@ -65,12 +60,12 @@ const SendParcel = () => {
     return basePrice + extraWeightCost + outsideExtra;
   };
 
-const onSubmit = (data) => {
-  const cost = calculateDeliveryCost(data);
+  const onSubmit = (data) => {
+    const cost = calculateDeliveryCost(data);
 
-  Swal.fire({
-    title: "Confirm Parcel",
-    html: `
+    Swal.fire({
+      title: "Confirm Parcel",
+      html: `
       <div class="text-left space-y-2">
         <p><b>Parcel Type:</b> ${data.type}</p>
         <p><b>Sender Center:</b> ${data.sender_center}</p>
@@ -81,45 +76,47 @@ const onSubmit = (data) => {
         </p>
       </div>
     `,
-    icon: "info",
-    showCancelButton: true,
-    confirmButtonText: "Confirm & Submit",
-    cancelButtonText: "Cancel",
-    confirmButtonColor: "#22c55e", // Tailwind green-500
-    cancelButtonColor: "#ef4444", // red-500
-  }).then((result) => {
-    if (result.isConfirmed) {
-      const finalData = {
-        tracking_id: generateTrackingId(),
-        ...data,
-        delivery_cost: cost,
-        create_by: user.email,
-        payment_status: 'unpaid',
-        delivery_status: 'not collected',
-        creation_date: new Date().toISOString(),
-      };
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonText: "Confirm & Submit",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#22c55e", // Tailwind green-500
+      cancelButtonColor: "#ef4444", // red-500
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const finalData = {
+          tracking_id: generateTrackingId(),
+          ...data,
+          delivery_cost: cost,
+          create_by: user.email,
+          payment_status: "unpaid",
+          delivery_status: "not collected",
+          creation_date: new Date().toISOString(),
+        };
 
-      console.log("Saved Parcel:", finalData);
-      // 🔁 API CALL HERE
-
-      Swal.fire({
-        title: "Success!",
-        text: "Parcel created successfully",
-        icon: "success",
-        confirmButtonColor: "#22c55e",
-      });
-    }
-  });
-};
-
-
+        console.log("Saved Parcel:", finalData);
+        // 🔁 API CALL HERE
+        axiosSecure.post("/parcels", finalData).then((res) => {
+          console.log(res.data);
+          if (res.data.insertedId) {
+            Swal.fire({
+              title: "Redirect",
+              text: "Proceding to Payment getway",
+              icon: "success",
+              timer:1500,
+              confirmButtonColor: "#22c55e",
+            });
+          }
+        });
+      }
+    });
+  };
 
   return (
     <section className="max-w-7xl mx-auto px-3 md:px-5 py-6">
-     
       {/* HEADER */}
       <div className="text-center">
-        <h2 className="text-4xl font-bold">Add Parcel</h2>
+        <h2 className="text-3xl uppercase font-urbanist ">Add Parcel</h2>
         <p className="text-gray-500 mt-2">
           Door to Door Parcel Delivery System
         </p>
