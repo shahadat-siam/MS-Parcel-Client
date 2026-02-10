@@ -1,5 +1,4 @@
-import { useForm } from "react-hook-form";
-import toast, { Toaster } from "react-hot-toast";
+import { useForm } from "react-hook-form"; 
 import warehouseData from "./wearHouseData";
 import Swal from "sweetalert2";
 import useAuth from "../../Hooks/useAuth";
@@ -110,6 +109,7 @@ const SendParcel = () => {
         });
       }
     });
+    reset()
   };
 
   return (
