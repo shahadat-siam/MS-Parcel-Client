@@ -1,4 +1,4 @@
-import React from 'react';
+ 
 import { Link, Outlet } from 'react-router';
 
 const DashboardLayout = () => {
@@ -38,8 +38,8 @@ const DashboardLayout = () => {
                 <label htmlFor="my-drawer-3" aria-label="close sidebar" className="drawer-overlay"></label>
                 <ul className="menu bg-base-300 min-h-full w-60 p-4">
                     {/* Sidebar content here */}
-                     <Link to={'/'}><li><a>Home</a></li></Link>
-                    <li><a>Sidebar Item 2</a></li>
+                     <Link to={'/'}><li><a>Home</a></li></Link> 
+                     <Link to={'/dashboard/myparcels'}><li><a>My Parcels</a></li></Link>  
                 </ul>
             </div>
         </div>

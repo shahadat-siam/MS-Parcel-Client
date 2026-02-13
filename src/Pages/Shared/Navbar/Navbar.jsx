@@ -1,11 +1,18 @@
 import React from 'react';
-import { NavLink } from 'react-router';
+import { NavLink  } from 'react-router';
 import MsParcelLogo from '../MsParcelLogo/MsParcelLogo';
 import { GoArrowUpRight } from 'react-icons/go';
 import useAuth from '../../../Hooks/useAuth';
 
 const Navbar = () => {
-    const { user } = useAuth()
+    const { user, logOut } = useAuth()
+ 
+
+    const handleLogout= () => {
+        logOut()
+        .then(result => console.log(result))
+        .catch(error => console.log(error))
+    }
 
     const navItems = <>
         <li><NavLink to="/">Home</NavLink></li>
@@ -42,8 +49,11 @@ const Navbar = () => {
                 </ul>
             </div>
             <div className="navbar-end gap-2">
+                {user ? <button onClick={handleLogout} className='btn btn-primary text-slate-900'>Logout</button> :   
+                <>
                 <NavLink to={'login'}><a className="btn btn-outline btn-primary rounded-md text-slate-700">Sign in</a></NavLink>
                 <NavLink to={'signup'}><a className="btn bg-primary rounded-md">Sign up</a></NavLink>
+                </>}
                 <a className="btn btn-circle text-xl bg-black text-primary"><GoArrowUpRight /></a>
             </div>
         </div>
