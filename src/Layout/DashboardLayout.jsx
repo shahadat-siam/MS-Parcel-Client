@@ -1,45 +1,105 @@
- 
-import { Link, Outlet } from 'react-router';
+import { NavLink, Outlet } from "react-router-dom";
+import {
+    FaHome,
+    FaUserEdit,
+    FaBoxOpen,
+    FaHistory,
+    FaMapMarkerAlt,
+    FaSignOutAlt,
+} from "react-icons/fa";
 
 const DashboardLayout = () => {
+    const navLinkClass = ({ isActive }) =>
+        `flex items-center gap-2 ${isActive ? "text-[#0C7779] font-semibold" : "text-gray-600"
+        }`;
+
     return (
         <div className="drawer lg:drawer-open">
             <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
-            <div className="drawer-content flex flex-col  ">
 
+            <div className="drawer-content flex flex-col">
                 {/* Navbar */}
                 <div className="navbar bg-base-300 lg:hidden w-full">
                     <div className="flex-none">
-                        <label htmlFor="my-drawer-3" aria-label="open sidebar" className="btn btn-square btn-ghost">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                className="inline-block h-6 w-6 stroke-current"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M4 6h16M4 12h16M4 18h16"
-                                ></path>
-                            </svg>
+                        <label
+                            htmlFor="my-drawer-3"
+                            className="btn btn-square btn-ghost"
+                        >
+                            ☰
                         </label>
                     </div>
-                    <div className="mx-2 flex-1 px-2">Dashboard</div>
-
+                    <div className="mx-2 flex-1 px-2 font-bold">Dashboard</div>
                 </div>
 
-                {/* Page content here */}
+                {/* Page content */}
                 <Outlet />
-
             </div>
-            <div className="drawer-side">
-                <label htmlFor="my-drawer-3" aria-label="close sidebar" className="drawer-overlay"></label>
-                <ul className="menu bg-base-300 min-h-full w-60 p-4">
-                    {/* Sidebar content here */}
-                     <Link to={'/'}><li><a>Home</a></li></Link> 
-                     <Link to={'/dashboard/myparcels'}><li><a>My Parcels</a></li></Link>  
+
+            {/* Sidebar */}
+            <div className="drawer-side  ">
+                <label
+                    htmlFor="my-drawer-3"
+                    className="drawer-overlay"
+                ></label>
+
+                <ul className="menu bg-[#cde3ec] min-h-full w-60 p-4 flex flex-col justify-between">
+
+                    {/* Top menu items */}
+                    <div className="space-y-2">
+                        <li>
+                            <NavLink to="/" className={navLinkClass}>
+                                <FaHome /> Home
+                            </NavLink>
+                        </li>
+
+                        <li>
+                            <NavLink
+                                to="/dashboard/update-profile"
+                                className={navLinkClass}
+                            >
+                                <FaUserEdit /> Update Profile
+                            </NavLink>
+                        </li>
+
+                        <li>
+                            <NavLink
+                                to="/dashboard/myparcels"
+                                className={navLinkClass}
+                            >
+                                <FaBoxOpen /> My Parcels
+                            </NavLink>
+                        </li>
+
+                        <li>
+                            <NavLink
+                                to="/dashboard/payment-history"
+                                className={navLinkClass}
+                            >
+                                <FaHistory /> Payment History
+                            </NavLink>
+                        </li>
+
+                        <li>
+                            <NavLink
+                                to="/dashboard/trackparcel"
+                                className={navLinkClass}
+                            >
+                                <FaMapMarkerAlt /> Tracking
+                            </NavLink>
+                        </li>
+                    </div>
+
+                    {/* Logout button bottom */}
+                    <div>
+                        <li>
+                            <button
+                                className="flex items-center gap-2 text-red-500 hover:text-red-700"
+                                onClick={() => console.log("Logout clicked")}
+                            >
+                                <FaSignOutAlt /> Logout
+                            </button>
+                        </li>
+                    </div>
                 </ul>
             </div>
         </div>
