@@ -16,7 +16,7 @@ const TrackParcel = () => {
     queryKey: ["tracking", trackingId],
     enabled: !!trackingId,
     queryFn: async () => {
-      const res = await axiosPublic.get(`/tracking/${trackingId}`);
+      const res = await axiosSecure.get(`/tracking/${trackingId}`);
       return res.data;
     }
   });

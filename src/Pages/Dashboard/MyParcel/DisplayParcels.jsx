@@ -19,7 +19,7 @@ const DisplayParcels = ({ parcels = [], onDelete, onPay }) => {
             <tr>
               <th>#</th>
               <th>Type</th>
-              <th>Receiver</th>
+              <th>Track-ID</th>
               <th>Cost</th>
               <th>Payment</th>
               <th>Status</th>
@@ -39,7 +39,7 @@ const DisplayParcels = ({ parcels = [], onDelete, onPay }) => {
                 >
                   <td>{index + 1}</td>
                   <td className="capitalize">{parcel.type}</td>
-                  <td>{parcel.receiver_name}</td>
+                  <td>{parcel.tracking_id}</td>
                   <td>৳{parcel.delivery_cost}</td>
 
                   <td>
