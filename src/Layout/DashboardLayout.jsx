@@ -7,8 +7,10 @@ import {
     FaMapMarkerAlt,
     FaSignOutAlt,
 } from "react-icons/fa";
+import useAuth from "../Hooks/useAuth";
 
 const DashboardLayout = () => {
+    const {logOut} = useAuth()
     const navLinkClass = ({ isActive }) =>
         `flex items-center gap-2 ${isActive ? "text-[#0C7779] font-semibold" : "text-gray-600"
         }`;
@@ -94,7 +96,7 @@ const DashboardLayout = () => {
                         <li>
                             <button
                                 className="flex items-center gap-2 text-red-500 hover:text-red-700"
-                                onClick={() => console.log("Logout clicked")}
+                                onClick={logOut}
                             >
                                 <FaSignOutAlt /> Logout
                             </button>

@@ -3,10 +3,14 @@ import { NavLink } from 'react-router';
 import useAuth from "../../../../Hooks/useAuth";
 import SocialLogin from "../../SocialLogin/SocialLogin";
 import axios from "axios";
+import { useState } from "react";
+import useAxios from "../../../../Hooks/useAxios";
 
 const Register = () => {
     const { register, handleSubmit, formState: { errors } } = useForm();
-    const {createUser} = useAuth()
+    const {createUser, updateUserProfile} = useAuth()
+    const [profilePic, setProfilePic] = useState('')
+    const axiosInstance = useAxios()
 
     const handleImageUpload = async(e) => {
         const image = e.target.files[0]
@@ -14,14 +18,39 @@ const Register = () => {
         formData.append('image',image)
         const imageUploadUrl = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_upload_key}`
         const res = await axios.post(imageUploadUrl, formData)
-        console.log(res.data.data.url)
+        setProfilePic(res.data.data.url)
+        
     }
 
     const onSubmit = data => {
         console.log(data)
         createUser(data.email, data.password)
-          .then(result => {
+          .then(async (result) => {
             console.log(result.user)
+
+            // update userinfo in the database 
+            const userInfo = {
+                email: data.email,
+                role: 'user',
+                create_at: new Date().toISOString(),
+                last_login: new Date().toISOString()
+            }
+
+            const userRes = await axiosInstance.post('/users', userInfo)
+            console.log(userRes.data)
+
+            // update user profile in firebase
+            const userProfile = {
+                displayName: data.name,
+                photoURL: profilePic
+            }
+            updateUserProfile(userProfile)
+            .then(() => {
+                console.log('Profile name & pic updated')
+            })
+            .catch(error => {
+                console.log(error)
+            })
           })
           .catch(error => {
             console.log(error)
