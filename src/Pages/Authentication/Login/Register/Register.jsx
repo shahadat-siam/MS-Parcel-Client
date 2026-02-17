@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form"; 
-import { NavLink, useNavigate } from 'react-router';
+import { NavLink, useLocation, useNavigate } from 'react-router';
 import useAuth from "../../../../Hooks/useAuth";
 import SocialLogin from "../../SocialLogin/SocialLogin";
 import axios from "axios";
@@ -11,7 +11,9 @@ const Register = () => {
     const {createUser, updateUserProfile} = useAuth()
     const [profilePic, setProfilePic] = useState('')
     const axiosInstance = useAxios()
-    const navigate = useNavigate()
+    const location = useLocation();
+    const navigate = useNavigate();
+    const from = location.state?.from || "/";
 
     const handleImageUpload = async(e) => {
         const image = e.target.files[0]
@@ -48,11 +50,12 @@ const Register = () => {
             updateUserProfile(userProfile)
             .then(() => {
                 console.log('Profile name & pic updated')
+                navigate(from)
             })
             .catch(error => {
                 console.log(error)
             })
-            navigate('/')
+             
           })
           .catch(error => {
             console.log(error)

@@ -4,7 +4,7 @@ const Loader = ({
   size = 32,              // icon size in px
   color = "text-orange-600",
   fullScreen = false,     // page loader or inline
-  text = "Loading..."
+  text 
 }) => {
   return (
     <div

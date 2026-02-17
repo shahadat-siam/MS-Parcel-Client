@@ -60,7 +60,7 @@ const Login = () => {
           <button className="btn text-slate-900 btn-primary mt-4">Login</button>
           <p>
             Don't have any account?{" "}
-            <NavLink to={"/signup"} className="text-[#316d15] underline">
+            <NavLink to={"/signup"} state={{from}} className="text-[#316d15] underline">
               sign up
             </NavLink>
           </p>
