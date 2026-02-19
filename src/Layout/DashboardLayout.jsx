@@ -14,12 +14,13 @@ import useUserRole from "../Hooks/useUserRole";
 
 const DashboardLayout = () => {
   const { logOut } = useAuth();
-  const [role, isLoading] = useUserRole() 
+  const [role, isLoading, refetch] = useUserRole() 
   console.log(role)
   const navLinkClass = ({ isActive }) =>
     `flex items-center gap-2 ${
       isActive ? "text-[#0C7779] font-semibold" : "text-gray-600"
     }`;
+
 
   return (
     <div className="drawer lg:drawer-open">

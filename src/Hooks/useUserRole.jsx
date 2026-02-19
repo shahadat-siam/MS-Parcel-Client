@@ -6,16 +6,20 @@ const useUserRole = () => {
   const { user, loading } = useAuth();
   const axiosSecure = useAxiosSecure();
 
-  const { data: role, isLoading } = useQuery({
-    queryKey: ['userRole'],
-    enabled: !loading && !!user,
+  const { data: role, isLoading, refetch } = useQuery({
+    queryKey: ['userRole', user?.email],
+    enabled: !loading && !!user?.email,
     queryFn: async () => {
-      const res = await axiosSecure.get('/users/role');
+      const res = await axiosSecure.get('/users/role'); 
       return res.data.role;
-    }
+    },
+    staleTime: 0, // optional but good for role
   });
 
-  return [role, isLoading];
+  // ✅ log here, not inside queryFn
+  console.log('role from user role auth:', role);
+
+  return [role, isLoading, refetch];
 };
 
 export default useUserRole;

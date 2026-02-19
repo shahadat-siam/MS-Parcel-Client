@@ -1,14 +1,14 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-// import useAxiosPublic from "../../Hooks/useAxiosPublic";
-import useAxiosSecure from "../../../Hooks/useAxiosSecure";
+// import useAxiosPublic from "../../Hooks/useAxiosPublic"; 
+import useAxios from "../../../Hooks/useAxios";
 
 const TrackParcel = () => {
   const { trackingId: urlTrackingId } = useParams();
   console.log('Tracking id',urlTrackingId)
   const navigate = useNavigate();
-  const axiosSecure = useAxiosSecure();
+  const axiosInstant = useAxios();
 
   const [trackingId, setTrackingId] = useState(urlTrackingId || "");
 
@@ -16,7 +16,7 @@ const TrackParcel = () => {
     queryKey: ["tracking", trackingId],
     enabled: !!trackingId,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/tracking/${trackingId}`);
+      const res = await axiosInstant.get(`/tracking/${trackingId}`);
       return res.data;
     }
   });
