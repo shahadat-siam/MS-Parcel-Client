@@ -10,9 +10,12 @@ import {
   FaMotorcycle
 } from "react-icons/fa";
 import useAuth from "../Hooks/useAuth";
+import useUserRole from "../Hooks/useUserRole";
 
 const DashboardLayout = () => {
   const { logOut } = useAuth();
+  const [role, isLoading] = useUserRole() 
+  console.log(role)
   const navLinkClass = ({ isActive }) =>
     `flex items-center gap-2 ${
       isActive ? "text-[#0C7779] font-semibold" : "text-gray-600"
@@ -73,7 +76,9 @@ const DashboardLayout = () => {
                 <FaMapMarkerAlt /> Tracking
               </NavLink>
             </li>
-            <li>
+             { !isLoading && role === 'admin' &&
+              <>
+              <li>
               <NavLink to="/dashboard/active-riders" className={navLinkClass}>
                 <FaMotorcycle /> Active Riders
               </NavLink>
@@ -84,6 +89,14 @@ const DashboardLayout = () => {
                 <FaUserClock /> Pending Riders
               </NavLink>
             </li>
+
+            <li>
+              <NavLink to="/dashboard/manage-admin" className={navLinkClass}>
+                <FaUserClock /> Manage Admin
+              </NavLink>
+            </li>
+              </>
+             }
           </div>
 
           {/* Logout button bottom */}

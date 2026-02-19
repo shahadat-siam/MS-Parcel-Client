@@ -2,15 +2,18 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import useAxios from "../../../Hooks/useAxios";
 import Loader from "../../Shared/Loader/Loadder";
+import useAuth from "../../../Hooks/useAuth";
 
 const PendingRider = () => {
   const [selectedRider, setSelectedRider] = useState(null);
   const queryClient = useQueryClient();
+  const {user , loading} = useAuth()
   const axiosSecure = useAxios();
 
   // 🔹 Fetch Pending Riders
   const { data: riders = [], isLoading } = useQuery({
     queryKey: ["riders-pending"],
+    enabled: !loading && !!user, 
     queryFn: async () => {
       const res = await axiosSecure.get("/riders?status=pending");
       return res.data;
