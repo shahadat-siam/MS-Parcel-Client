@@ -7,7 +7,7 @@ import { Navigate, useLocation } from 'react-router';
 const AdminRoutes = ({ children }) => {
     const {user, loading} = useAuth()
     const location = useLocation();
-    const [role, isLoading] = useUserRole()
+    const {role, isLoading} = useUserRole()
 
     if(loading || isLoading){
         return  <Loadder/>;

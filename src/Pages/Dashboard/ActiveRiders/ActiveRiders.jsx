@@ -1,13 +1,13 @@
 import { useState, useMemo } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import useAxios from "../../../Hooks/useAxios";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"; 
 import Loader from "../../Shared/Loader/Loadder";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 const ActiveRiders = () => {
   const [search, setSearch] = useState("");
   const [selectedRider, setSelectedRider] = useState(null);
 
-  const axiosSecure = useAxios();
+  const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
 
   // ✅ Fetch Active Riders

@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form"; 
 import serviceCenters from './Riderdata'
-import useAuth from "../../../Hooks/useAuth";
-import useAxios from "../../../Hooks/useAxios";
+import useAuth from "../../../Hooks/useAuth"; 
 import Swal from "sweetalert2";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 const BeARider = () => {
   const { user } = useAuth();
   const { register, handleSubmit, setValue, watch } = useForm();
-  const axiosSecure = useAxios()
+  const axiosSecure = useAxiosSecure()
   const [regions, setRegions] = useState([]);
   const [districts, setDistricts] = useState([]);
 

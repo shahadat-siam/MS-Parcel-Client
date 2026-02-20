@@ -7,20 +7,19 @@ import {
   FaMapMarkerAlt,
   FaSignOutAlt,
   FaUserClock,
-  FaMotorcycle
+  FaMotorcycle,
 } from "react-icons/fa";
 import useAuth from "../Hooks/useAuth";
 import useUserRole from "../Hooks/useUserRole";
 
 const DashboardLayout = () => {
   const { logOut } = useAuth();
-  const [role, isLoading, refetch] = useUserRole() 
-  console.log(role)
+  const { role, isLoading, refetch } = useUserRole();
+  console.log(role);
   const navLinkClass = ({ isActive }) =>
     `flex items-center gap-2 ${
       isActive ? "text-[#0C7779] font-semibold" : "text-gray-600"
     }`;
-
 
   return (
     <div className="drawer lg:drawer-open">
@@ -77,27 +76,36 @@ const DashboardLayout = () => {
                 <FaMapMarkerAlt /> Tracking
               </NavLink>
             </li>
-             { !isLoading && role === 'admin' &&
+            {!isLoading && role === "admin" && (
               <>
-              <li>
-              <NavLink to="/dashboard/active-riders" className={navLinkClass}>
-                <FaMotorcycle /> Active Riders
-              </NavLink>
-            </li>
+                <li>
+                  <NavLink
+                    to="/dashboard/active-riders"
+                    className={navLinkClass}
+                  >
+                    <FaMotorcycle /> Active Riders
+                  </NavLink>
+                </li>
 
-            <li>
-              <NavLink to="/dashboard/pending-riders" className={navLinkClass}>
-                <FaUserClock /> Pending Riders
-              </NavLink>
-            </li>
+                <li>
+                  <NavLink
+                    to="/dashboard/pending-riders"
+                    className={navLinkClass}
+                  >
+                    <FaUserClock /> Pending Riders
+                  </NavLink>
+                </li>
 
-            <li>
-              <NavLink to="/dashboard/manage-admin" className={navLinkClass}>
-                <FaUserClock /> Manage Admin
-              </NavLink>
-            </li>
+                <li>
+                  <NavLink
+                    to="/dashboard/manage-admin"
+                    className={navLinkClass}
+                  >
+                    <FaUserClock /> Manage Admin
+                  </NavLink>
+                </li>
               </>
-             }
+            )}
           </div>
 
           {/* Logout button bottom */}

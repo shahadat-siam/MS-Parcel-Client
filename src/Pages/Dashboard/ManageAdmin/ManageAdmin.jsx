@@ -1,118 +1,181 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import Swal from "sweetalert2";
+import { useQuery, useMutation } from "@tanstack/react-query"; 
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
-import useUserRole from "../../../Hooks/useUserRole";
+import Swal from "sweetalert2";
+import Loader from "../../Shared/Loader/Loadder";
 
 const ManageAdmin = () => {
   const axiosSecure = useAxiosSecure();
-  const queryClient = useQueryClient();
-  const [search, setSearch] = useState("");
-  const [role] = useUserRole() 
+  const [searchText, setSearchText] = useState("");
+  const [emailQuery, setEmailQuery] = useState("");
+
+  // 🔍 Search Users
   const {
     data: users = [],
+    isLoading,
     refetch,
-    isFetching,
+    isError,
   } = useQuery({
-    queryKey: ["users", search],
-    enabled: false,
+    queryKey: ["searchUsers", emailQuery],
+    enabled: !!emailQuery,
     queryFn: async () => {
-      const res = await axiosSecure.get(`/users/search?email=${search}`);
+      const res = await axiosSecure.get(
+        `/users/search?email=${emailQuery}`
+      );
       return res.data;
     },
   });
+ 
 
+  // 🛡️ Role Update Mutation (Admin/User)
   const roleMutation = useMutation({
-    mutationFn: ({ id, role }) =>
-      axiosSecure.patch(`/users/role/${id}`, { role }),
+    mutationFn: async ({ id, role }) => {
+      const res = await axiosSecure.patch(`/users/role/${id}`, { role });
+      return res.data;
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries(["users"]);
-      Swal.fire({
-        icon: "success",
-        title: "Role updated",
-        timer: 1200,
-        showConfirmButton: false,
-      });
-    }, 
-  }); 
+      refetch();
+    },
+  });
 
-  const handleRoleChange = (user) => {
-    const newRole = user.role === "admin" ? "user" : "admin";
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setEmailQuery(searchText.trim());
+  };
 
+  const handleMakeAdmin = (id) => { 
     Swal.fire({
       title: "Are you sure?",
-      text: `Change role to ${newRole}?`,
+      text: `Change role to Admin?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes",
     }).then((result) => {
       if (result.isConfirmed) {
-        roleMutation.mutate({ id: user._id, role: newRole });
+        roleMutation.mutate({ id , role: 'admin' });
         refetch()
       }
     });
+    // roleMutation.mutate({ id, role: "admin" });
+  };
+
+  const handleRemoveAdmin = (id) => { 
+    Swal.fire({
+      title: "Are you sure?",
+      text: `Change role to User?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        roleMutation.mutate({ id , role: 'user' });
+        refetch()
+      }
+    });
+    // roleMutation.mutate({ id, role: "user" });
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-semibold mb-4">Manage Admin</h2>
+    <div className="p-6 bg-white rounded-xl shadow-md">
+      <h2 className="text-2xl font-bold mb-5">Manage Admin</h2>
 
-      <div className="flex gap-2 mb-6">
+      {/* 🔎 Search Form */}
+      <form onSubmit={handleSearch} className="flex gap-3 mb-6">
         <input
           type="text"
-          placeholder="Search by email"
-          className="input outline-none input-bordered w-full"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search user by email (partial)..."
+          className="border outline-none w-full p-2 rounded-lg"
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
         />
         <button
-          onClick={() => refetch()}
-          className="btn text-black btn-primary"
+          type="submit"
+          className="bg-primary text-slate-800 px-5 py-2 rounded-lg"
         >
           Search
         </button>
-      </div>
+      </form>
 
-      {isFetching && <p>Loading...</p>}
+      {/* ⏳ Loading */}
+      {isLoading && <p className="text-blue-500">Searching users...</p>}
 
-      <table className="table table-zebra">
-        <thead>
-          <tr>
-            <th>Email</th>
-            <th>Created At</th>
-            <th>Role</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user._id}>
-              <td>{user.email}</td>
-              <td>
-                {user.create_at
-                  ? new Date(user.create_at).toLocaleDateString('en-GB', {
-                      day: '2-digit',
-                      month: 'short',
-                      year: 'numeric'
-                    })
-                  : 'N/A'}
-              </td>
-              <td className="capitalize">{user.role || "user"}</td>
-              <td>
-                <button
-                  onClick={() => handleRoleChange(user)}
-                  className={`btn btn-sm ${
-                    user.role === "admin" ? "btn-error" : "btn-success"
-                  }`}
-                  disabled={roleMutation.isLoading}
-                >
-                  {user.role === "admin" ? "Remove Admin" : "Make Admin"}
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {/* ❌ Error */}
+      {isError && (
+        <p className="text-red-500">No user found or server error</p>
+      )}
+
+      {/* 📊 Table */}
+      {users.length > 0 && (
+        <div className="overflow-x-auto">
+          <table className="table w-full border">
+            <thead className="bg-gray-100">
+              <tr>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Created At</th>
+                <th>Last Login</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((user) => (
+                <tr key={user._id} className="border-t">
+                  <td className="font-medium">{user.email}</td>
+
+                  <td>
+                    <span
+                      className={`px-3 py-1 rounded text-white text-sm ${
+                        user.role === "admin"
+                          ? "bg-green-600"
+                          : "bg-gray-500"
+                      }`}
+                    >
+                      {user.role}
+                    </span>
+                  </td>
+
+                  <td>
+                    {new Date(user.create_at).toLocaleString()}
+                  </td>
+
+                  <td>
+                    {user.last_login
+                      ? new Date(user.last_login).toLocaleString()
+                      : "N/A"}
+                  </td>
+
+                  <td className="flex gap-2">
+                    {user.role !== "admin" ? (
+                      <button
+                        onClick={() => handleMakeAdmin(user._id)}
+                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded"
+                        disabled={roleMutation.isPending}
+                      >
+                        Make Admin
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleRemoveAdmin(user._id)}
+                        className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+                        disabled={roleMutation.isPending}
+                      >
+                        Remove Admin
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* 🔍 Empty State */}
+      {!isLoading && emailQuery && users.length === 0 && (
+        <p className="text-gray-500 text-center mt-4">
+          No users matched your search.
+        </p>
+      )}
     </div>
   );
 };
