@@ -14,7 +14,7 @@ import useUserRole from "../Hooks/useUserRole";
 
 const DashboardLayout = () => {
   const { logOut } = useAuth();
-  const { role, isLoading, refetch } = useUserRole();
+  const { role, isLoading,  } = useUserRole();
   console.log(role);
   const navLinkClass = ({ isActive }) =>
     `flex items-center gap-2 ${
@@ -34,8 +34,7 @@ const DashboardLayout = () => {
             </label>
           </div>
           <div className="mx-2 flex-1 px-2 font-bold">Dashboard</div>
-        </div>
-
+        </div> 
         {/* Page content */}
         <Outlet />
       </div>
@@ -53,11 +52,11 @@ const DashboardLayout = () => {
               </NavLink>
             </li>
 
-            <li>
+            {/* <li>
               <NavLink to="/dashboard/update-profile" className={navLinkClass}>
-                <FaUserEdit /> Update Profile
+                <FaUserEdit /> My Profile
               </NavLink>
-            </li>
+            </li> */}
 
             <li>
               <NavLink to="/dashboard/myparcels" className={navLinkClass}>
@@ -93,6 +92,14 @@ const DashboardLayout = () => {
                     className={navLinkClass}
                   >
                     <FaUserClock /> Pending Riders
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/dashboard/assign-riders"
+                    className={navLinkClass}
+                  >
+                    <FaMotorcycle /> Assign Riders
                   </NavLink>
                 </li>
 

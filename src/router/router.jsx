@@ -19,6 +19,7 @@ import ActiveRiders from "../Pages/Dashboard/ActiveRiders/ActiveRiders";
 import ManageAdmin from "../Pages/Dashboard/ManageAdmin/ManageAdmin";
 import Forbidden from "../Pages/Shared/Forbidden/Forbidden";
 import AdminRoutes from "../Routes/AdminRoutes";
+import AssignRiders from "../Pages/Dashboard/AssignRiders/AssignRiders";
 
 export const router = createBrowserRouter([
   {
@@ -69,9 +70,13 @@ export const router = createBrowserRouter([
     element: <PrivateRoute><DashboardLayout/></PrivateRoute>,
     children: [ 
       {
-        path: 'update-profile',
-        Component: MyProfile
+        path:'',
+        element: <MyProfile/>
       },
+      // {
+      //   path: 'update-profile',
+      //   Component: MyProfile
+      // },
       {
         path: 'myparcels',
         Component: MyParcel
@@ -99,6 +104,10 @@ export const router = createBrowserRouter([
       {
         path: 'manage-admin',
         element: <AdminRoutes><ManageAdmin/></AdminRoutes>
+      },
+      {
+        path: 'assign-riders',
+        element: <AdminRoutes><AssignRiders/></AdminRoutes>
       }
     ]
   }
