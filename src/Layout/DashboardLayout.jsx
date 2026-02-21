@@ -14,8 +14,8 @@ import useUserRole from "../Hooks/useUserRole";
 
 const DashboardLayout = () => {
   const { logOut } = useAuth();
-  const { role, isLoading,  } = useUserRole();
-  console.log(role);
+  const { role, loadingRole } = useUserRole();
+  // console.log(role);
   const navLinkClass = ({ isActive }) =>
     `flex items-center gap-2 ${
       isActive ? "text-[#0C7779] font-semibold" : "text-gray-600"
@@ -75,7 +75,7 @@ const DashboardLayout = () => {
                 <FaMapMarkerAlt /> Tracking
               </NavLink>
             </li>
-            {!isLoading && role === "admin" && (
+            {!loadingRole && role === "admin" && (
               <>
                 <li>
                   <NavLink

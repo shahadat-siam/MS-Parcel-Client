@@ -31,14 +31,9 @@ const AssignRider = () => {
     queryKey: ["availableriders", selectedParcel?.sender_center],
     enabled: !!selectedParcel?.sender_center, // 🔥 FIX 2 (important)
     queryFn: async () => {
-      console.log(
-        "Fetching riders for district:",
-        selectedParcel?.sender_center
-      );
+      console.log("Fetching riders for district:", selectedParcel?.sender_center );
 
-      const res = await axiosSecure.get(
-        `/availableriders?district=${selectedParcel.sender_center}`
-      );
+      const res = await axiosSecure.get(`/availableriders?district=${selectedParcel.sender_center}`);
       return res.data;
     },
   });
@@ -53,10 +48,7 @@ const AssignRider = () => {
         delivery_status: "assigned",
       };
 
-      const res = await axiosSecure.patch(
-        `/parcels/assign-rider/${parcelId}`,
-        payload
-      );
+      const res = await axiosSecure.patch(`/parcels/assign-rider/${parcelId}`,payload );
       return res.data;
     },
     onSuccess: () => {
@@ -147,7 +139,7 @@ const AssignRider = () => {
                 <td>
                   <button
                     onClick={() => handleOpenModal(parcel)}
-                    className="btn btn-sm bg-primary text-white"
+                    className="btn btn-sm bg-primary text-slate-900"
                   >
                     Assign Rider
                   </button>
@@ -202,6 +194,12 @@ const AssignRider = () => {
                       District:{" "}
                       <span className="font-semibold">
                         {rider.district}
+                      </span>
+                    </p>
+                    <p className="text-sm mt-1">
+                      Phone:{" "}
+                      <span className="font-semibold">
+                        {rider.phone}
                       </span>
                     </p>
 
