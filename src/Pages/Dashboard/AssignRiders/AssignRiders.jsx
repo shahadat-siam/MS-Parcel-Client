@@ -45,7 +45,8 @@ const AssignRider = () => {
         riderId: rider._id,
         rider_name: rider.name,
         rider_email: rider.email,
-        delivery_status: "assigned",
+        rider_phone: rider.phone,
+        delivery_status: "rides_assigned",
       };
 
       const res = await axiosSecure.patch(`/parcels/assign-rider/${parcelId}`,payload );

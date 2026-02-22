@@ -75,6 +75,18 @@ const DashboardLayout = () => {
                 <FaMapMarkerAlt /> Tracking
               </NavLink>
             </li>
+            {!loadingRole && role === 'rider' && (
+              <>
+                 <li>
+                  <NavLink
+                    to="/dashboard/pending-assignedparcel"
+                    className={navLinkClass}
+                  >
+                    <FaMotorcycle /> AssignParcel
+                  </NavLink>
+                </li>
+              </>
+            )}
             {!loadingRole && role === "admin" && (
               <>
                 <li>

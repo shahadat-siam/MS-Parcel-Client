@@ -20,6 +20,7 @@ import ManageAdmin from "../Pages/Dashboard/ManageAdmin/ManageAdmin";
 import Forbidden from "../Pages/Shared/Forbidden/Forbidden";
 import AdminRoutes from "../Routes/AdminRoutes";
 import AssignRiders from "../Pages/Dashboard/AssignRiders/AssignRiders";
+import AssignedParcels from "../Pages/Dashboard/Rider/AssignedParcels";
 
 export const router = createBrowserRouter([
   {
@@ -108,6 +109,10 @@ export const router = createBrowserRouter([
       {
         path: 'assign-riders',
         element: <AdminRoutes><AssignRiders/></AdminRoutes>
+      },
+      {
+        path: 'pending-assignedparcel',
+        element: <AssignedParcels/>
       }
     ]
   }

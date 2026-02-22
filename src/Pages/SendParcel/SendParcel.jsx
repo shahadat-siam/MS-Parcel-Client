@@ -3,6 +3,7 @@ import warehouseData from "./wearHouseData";
 import Swal from "sweetalert2";
 import useAuth from "../../Hooks/useAuth";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import { useNavigate } from "react-router";
 
 const generateTrackingId = () => {
   const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
@@ -16,6 +17,7 @@ const SendParcel = () => {
   const { register, handleSubmit, watch, reset } = useForm();
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const navigate = useNavigate()
 
   const parcelType = watch("type");
   const senderRegion = watch("sender_region");
@@ -105,6 +107,7 @@ const SendParcel = () => {
               timer:1500,
               confirmButtonColor: "#22c55e",
             });
+            navigate('/dashboard/myparcels')
           }
         });
       }
