@@ -21,6 +21,7 @@ import Forbidden from "../Pages/Shared/Forbidden/Forbidden";
 import AdminRoutes from "../Routes/AdminRoutes";
 import AssignRiders from "../Pages/Dashboard/AssignRiders/AssignRiders";
 import AssignedParcels from "../Pages/Dashboard/Rider/AssignedParcels";
+import RiderRoute from "../Routes/RiderRoute";
 
 export const router = createBrowserRouter([
   {
@@ -112,7 +113,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'pending-assignedparcel',
-        element: <AssignedParcels/>
+        element:  <RiderRoute><AssignedParcels/></RiderRoute>
       }
     ]
   }
