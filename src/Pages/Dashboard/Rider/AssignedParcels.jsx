@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2"; 
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import useAuth from "../../../Hooks/useAuth";
+import Loader from "../../Shared/Loader/Loadder";
 
 const AssignedParcels = () => {
   const axiosSecure = useAxiosSecure();
@@ -9,42 +10,64 @@ const AssignedParcels = () => {
   const queryClient = useQueryClient();
 
   // ✅ Fetch rider pending parcels
-  const { data: parcels = [], isLoading } = useQuery({
+  const {
+    data: parcels = [],
+    isLoading,
+  } = useQuery({
     queryKey: ["riderPendingParcels", user?.email],
     enabled: !!user?.email,
     queryFn: async () => {
       const res = await axiosSecure.get(
-        `/parcels/assigned?rider_email=${user.email}`
+        `/allparcel/assigned?rider_email=${user.email}`
       );
       return res.data;
     },
   });
+  console.log(parcels)
 
   // ✅ Mutation for updating status
   const updateStatusMutation = useMutation({
     mutationFn: async ({ id, status }) => {
       const res = await axiosSecure.patch(
-        `/parcels/${id}/status`,
+        `/parcelride/${id}/status`,
         { status }
       );
       return res.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["riderPendingParcels"]);
+      // 🔥 FIX: Must include same query key
+      queryClient.invalidateQueries({
+        queryKey: ["riderPendingParcels", user?.email],
+      });
+    },
+    onError: () => {
+      Swal.fire("Error!", "Failed to update parcel status", "error");
     },
   });
 
   const handlePickedUp = (id) => {
-    updateStatusMutation.mutate({ id, status: "on-transit" });
-    Swal.fire("Success!", "Parcel marked as On Transit", "success");
+    updateStatusMutation.mutate(
+      { id, status: "in-transit" },
+      {
+        onSuccess: () => {
+          Swal.fire("Success!", "Parcel marked as On Transit", "success");
+        },
+      }
+    );
   };
 
   const handleDelivered = (id) => {
-    updateStatusMutation.mutate({ id, status: "delivered" });
-    Swal.fire("Delivered!", "Parcel successfully delivered", "success");
+    updateStatusMutation.mutate(
+      { id, status: "delivered" },
+      {
+        onSuccess: () => {
+          Swal.fire("Delivered!", "Parcel successfully delivered", "success");
+        },
+      }
+    );
   };
 
-  if (isLoading) return <p className="text-center mt-10">Loading...</p>;
+  if (isLoading) return <Loader text='assign parcel' />;
 
   return (
     <div className="p-6">
@@ -66,6 +89,7 @@ const AssignedParcels = () => {
               <th>Action</th>
             </tr>
           </thead>
+
           <tbody>
             {parcels.map((parcel, index) => (
               <tr key={parcel._id}>

@@ -18,7 +18,7 @@ const AssignRider = () => {
     queryFn: async () => {
       const res = await axiosSecure.get(
         "/parcel?payment_status=paid&delivery_status=not collected"
-      );
+      ); 
       return res.data;
     },
   });
