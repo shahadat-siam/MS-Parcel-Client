@@ -113,19 +113,19 @@ const AssignedParcels = () => {
                   </span>
                 </td>
                 <td>
-                  {parcel.delivery_status === "rider_assigned" && (
+                  {parcel.delivery_status === "rider_assigned"  && (
                     <button
-                      onClick={() => handlePickedUp(parcel._id)}
+                      onClick={() => handlePickedUp(parcel._id)} 
                       className="bg-primary  text-slate-800 cursor-pointer px-3 py-1 rounded"
                     >
                       Picked Up
                     </button>
                   )}
 
-                  {parcel.delivery_status === "on-transit" && (
+                  {parcel.delivery_status === "in-transit" && (
                     <button
                       onClick={() => handleDelivered(parcel._id)}
-                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
+                      className="bg-primary text-slate-800 cursor-pointer px-3 py-1 rounded"
                     >
                       Delivered
                     </button>

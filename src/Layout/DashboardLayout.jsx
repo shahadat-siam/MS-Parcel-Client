@@ -8,9 +8,11 @@ import {
   FaSignOutAlt,
   FaUserClock,
   FaMotorcycle,
+  FaCheckCircle,
 } from "react-icons/fa";
 import useAuth from "../Hooks/useAuth";
 import useUserRole from "../Hooks/useUserRole";
+import { FaMoneyBill } from "react-icons/fa6";
 
 const DashboardLayout = () => {
   const { logOut } = useAuth();
@@ -83,6 +85,22 @@ const DashboardLayout = () => {
                     className={navLinkClass}
                   >
                     <FaMotorcycle /> AssignParcel
+                  </NavLink>
+                </li>
+                 <li>
+                  <NavLink
+                    to="/dashboard/completed-deliveries"
+                    className={navLinkClass}
+                  >
+                    <FaCheckCircle /> Completed Delivered
+                  </NavLink>
+                </li>
+                 <li>
+                  <NavLink
+                    to="/dashboard/rider-earnings"
+                    className={navLinkClass}
+                  >
+                    <FaMoneyBill /> Rider Earnings
                   </NavLink>
                 </li>
               </>

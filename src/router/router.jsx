@@ -22,6 +22,8 @@ import AdminRoutes from "../Routes/AdminRoutes";
 import AssignRiders from "../Pages/Dashboard/AssignRiders/AssignRiders";
 import AssignedParcels from "../Pages/Dashboard/Rider/AssignedParcels";
 import RiderRoute from "../Routes/RiderRoute";
+import CompletedDeliveries from "../Pages/Dashboard/Rider/CompletedDeliveries/CompletedDeliveries";
+import RiderEarnings from "../Pages/Dashboard/Rider/RiderEarnings/RiderEarnings";
 
 export const router = createBrowserRouter([
   {
@@ -114,6 +116,14 @@ export const router = createBrowserRouter([
       {
         path: 'pending-assignedparcel',
         element:  <RiderRoute><AssignedParcels/></RiderRoute>
+      },
+      {
+        path: 'completed-deliveries',
+        element: <RiderRoute><CompletedDeliveries/></RiderRoute>
+      },
+      {
+        path: 'rider-earnings',
+        element: <RiderRoute><RiderEarnings/></RiderRoute>
       }
     ]
   }
