@@ -24,6 +24,7 @@ import AssignedParcels from "../Pages/Dashboard/Rider/AssignedParcels";
 import RiderRoute from "../Routes/RiderRoute";
 import CompletedDeliveries from "../Pages/Dashboard/Rider/CompletedDeliveries/CompletedDeliveries";
 import RiderEarnings from "../Pages/Dashboard/Rider/RiderEarnings/RiderEarnings";
+import AdminCashoutRequests from "../Pages/Dashboard/AdminCashoutStatus/AdminCashoutRequests";
 
 export const router = createBrowserRouter([
   {
@@ -108,6 +109,10 @@ export const router = createBrowserRouter([
       {
         path: 'manage-admin',
         element: <AdminRoutes><ManageAdmin/></AdminRoutes>
+      },
+      {
+        path: 'cashout-request',
+        element: <AdminRoutes><AdminCashoutRequests/></AdminRoutes>
       },
       {
         path: 'assign-riders',

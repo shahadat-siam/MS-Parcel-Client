@@ -141,6 +141,14 @@ const DashboardLayout = () => {
                     <FaUserClock /> Manage Admin
                   </NavLink>
                 </li>
+                <li>
+                  <NavLink
+                    to="/dashboard/cashout-request"
+                    className={navLinkClass}
+                  >
+                    <FaUserClock /> Cashout Request
+                  </NavLink>
+                </li>
               </>
             )}
           </div>
