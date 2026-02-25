@@ -8,17 +8,18 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts"; 
-import useAuth from "../../../../Hooks/useAuth";
+import DateRangePicker from "../../../Shared/DateRangePicker/DateRangePicker";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
+import useAuth from "../../../../Hooks/useAuth";
 
-const RiderEarnings = () => {
+const RiderEarningSummary = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
 
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
 
-  // 🔹 Get completed parcels
+  // Fetch completed parcels
   const { data: parcels = [] } = useQuery({
     queryKey: ["rider-completed", user?.email],
     enabled: !!user?.email,
@@ -30,11 +31,12 @@ const RiderEarnings = () => {
     },
   });
 
-  // 🔹 Add earning calculation
+  // Calculate earning
   const parcelsWithEarning = useMemo(() => {
     return parcels.map((parcel) => {
       const sameRegion =
-        parcel.sender_region === parcel.receiver_region;
+        parcel.sender_region?.toLowerCase() ===
+        parcel.receiver_region?.toLowerCase();
 
       const earning = sameRegion
         ? parcel.delivery_cost * 0.8
@@ -47,86 +49,90 @@ const RiderEarnings = () => {
     });
   }, [parcels]);
 
-  // 🔎 Filter by date
-  const filteredParcels = useMemo(() => {
-    return parcelsWithEarning.filter((parcel) => {
-      if (!startDate || !endDate) return true;
+  // Preset Logic
+  const handlePresetSelect = (type) => {
+    const now = new Date();
 
-      const deliveredDate = new Date(parcel.delivered_at);
-      return (
-        deliveredDate >= new Date(startDate) &&
-        deliveredDate <= new Date(endDate)
+    if (type === "today") {
+      const today = now.toISOString().split("T")[0];
+      setStartDate(today);
+      setEndDate(today);
+    }
+
+    if (type === "week") {
+      const firstDay = new Date(
+        now.setDate(now.getDate() - now.getDay())
       );
+      setStartDate(firstDay.toISOString().split("T")[0]);
+      setEndDate(new Date().toISOString().split("T")[0]);
+    }
+
+    if (type === "month") {
+      const firstDay = new Date(
+        new Date().getFullYear(),
+        new Date().getMonth(),
+        1
+      );
+      setStartDate(firstDay.toISOString().split("T")[0]);
+      setEndDate(new Date().toISOString().split("T")[0]);
+    }
+  };
+
+  const handleReset = () => {
+    setStartDate("");
+    setEndDate("");
+  };
+
+  // Filter Logic
+  const filteredParcels = useMemo(() => {
+    if (!startDate && !endDate) return parcelsWithEarning;
+
+    return parcelsWithEarning.filter((parcel) => {
+      const deliveredDate = new Date(parcel.delivered_at);
+
+      if (startDate && deliveredDate < new Date(startDate))
+        return false;
+      if (endDate && deliveredDate > new Date(endDate))
+        return false;
+
+      return true;
     });
   }, [parcelsWithEarning, startDate, endDate]);
 
-  // 📅 Weekly & Monthly
-  const now = new Date();
-  const weekAgo = new Date();
-  weekAgo.setDate(now.getDate() - 7);
-
-  const monthAgo = new Date();
-  monthAgo.setMonth(now.getMonth() - 1);
-
-  const weeklyEarning = parcelsWithEarning
-    .filter(p => new Date(p.delivered_at) >= weekAgo)
-    .reduce((sum, p) => sum + p.earning, 0);
-
-  const monthlyEarning = parcelsWithEarning
-    .filter(p => new Date(p.delivered_at) >= monthAgo)
-    .reduce((sum, p) => sum + p.earning, 0);
-
-  const totalEarning = parcelsWithEarning.reduce(
+  const totalEarning = filteredParcels.reduce(
     (sum, p) => sum + p.earning,
     0
   );
 
-  // 📊 Chart Data (Daily)
-  const chartData = filteredParcels.map(p => ({
+  // Chart Data (Grouped by Date)
+  const chartData = filteredParcels.map((p) => ({
     date: new Date(p.delivered_at).toLocaleDateString(),
-    earning: p.earning
+    earning: p.earning,
   }));
 
   return (
     <div className="p-6 space-y-6">
 
-      {/* 🔹 Summary Cards */}
-      <div className="grid md:grid-cols-3 gap-4">
-        <div className="card bg-base-100 shadow p-4">
-          <h3>Total Earnings</h3>
-          <p className="text-xl font-bold">৳ {totalEarning.toFixed(2)}</p>
-        </div>
-
-        <div className="card bg-base-100 shadow p-4">
-          <h3>This Week</h3>
-          <p className="text-xl font-bold text-green-600">
-            ৳ {weeklyEarning.toFixed(2)}
-          </p>
-        </div>
-
-        <div className="card bg-base-100 shadow p-4">
-          <h3>This Month</h3>
-          <p className="text-xl font-bold text-blue-600">
-            ৳ {monthlyEarning.toFixed(2)}
-          </p>
-        </div>
+      {/* Summary Card */}
+      <div className="card bg-base-100 shadow p-4">
+        <h3 className="text-lg font-semibold">Total Earnings</h3>
+        <p className="text-2xl font-bold text-green-600">
+          ৳ {totalEarning.toFixed(2)}
+        </p>
       </div>
 
-      {/* 🔎 Date Filter */}
-      <div className="flex gap-4">
-        <input
-          type="date"
-          className="input input-bordered"
-          onChange={(e) => setStartDate(e.target.value)}
-        />
-        <input
-          type="date"
-          className="input input-bordered"
-          onChange={(e) => setEndDate(e.target.value)}
-        />
-      </div>
+      {/* Date Filter */}
+      <DateRangePicker
+        label="📅 Filter Earnings"
+        startDate={startDate}
+        endDate={endDate}
+        onStartChange={setStartDate}
+        onEndChange={setEndDate}
+        onReset={handleReset}
+        onPresetSelect={handlePresetSelect}
+      />
 
-      {/* 📊 Earnings Chart */}
+      {/* Chart */}
       <div className="bg-white p-4 rounded-xl shadow h-80">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData}>
@@ -137,22 +143,8 @@ const RiderEarnings = () => {
           </BarChart>
         </ResponsiveContainer>
       </div>
-
-      {/* 💰 Cashout Button */}
-      <button
-        className="btn btn-success"
-        onClick={async () => {
-          await axiosSecure.post("/rider/cashout", {
-            rider_email: user.email,
-            amount: totalEarning
-          });
-          alert("Cashout Requested");
-        }}
-      >
-        Request Cashout
-      </button>
     </div>
   );
 };
 
-export default RiderEarnings;
+export default RiderEarningSummary;
