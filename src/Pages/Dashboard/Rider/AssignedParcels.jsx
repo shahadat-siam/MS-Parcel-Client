@@ -3,11 +3,13 @@ import Swal from "sweetalert2";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import useAuth from "../../../Hooks/useAuth";
 import Loader from "../../Shared/Loader/Loadder";
+import useTrackingLogger from "../../../Hooks/useTrackingLogger";
 
 const AssignedParcels = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const {logTracking} = useTrackingLogger()
 
   // ✅ Fetch rider pending parcels
   const {
@@ -27,11 +29,28 @@ const AssignedParcels = () => {
 
   // ✅ Mutation for updating status
   const updateStatusMutation = useMutation({
-    mutationFn: async ({ id, status }) => {
+    mutationFn: async ({ id, status, parcel}) => {
       const res = await axiosSecure.patch(
         `/parcelride/${id}/status`,
         { status }
       );
+        // 2️⃣ Send tracking log using IF condition (your requirement)
+    if (status === "in-transit") {
+      await logTracking({ 
+        tracking_id: parcel?.tracking_id,  
+        status: "picked-up",
+        location: parcel?.sender_center 
+      });
+    }
+
+    if (status === "delivered") {
+      await logTracking({  
+        tracking_id: parcel?.tracking_id,  
+        status: "delivered",
+        location: parcel?.sender_center 
+      });
+    }
+
       return res.data;
     },
     onSuccess: () => {
@@ -45,9 +64,9 @@ const AssignedParcels = () => {
     },
   });
 
-  const handlePickedUp = (id) => {
+  const handlePickedUp = (id, parcel) => {
     updateStatusMutation.mutate(
-      { id, status: "in-transit" },
+      { id, status: "in-transit", parcel },
       {
         onSuccess: () => {
           Swal.fire("Success!", "Parcel marked as On Transit", "success");
@@ -56,9 +75,9 @@ const AssignedParcels = () => {
     );
   };
 
-  const handleDelivered = (id) => {
+  const handleDelivered = (id, parcel) => {
     updateStatusMutation.mutate(
-      { id, status: "delivered" },
+      { id, status: "delivered", parcel },
       {
         onSuccess: () => {
           Swal.fire("Delivered!", "Parcel successfully delivered", "success");
@@ -115,7 +134,7 @@ const AssignedParcels = () => {
                 <td>
                   {parcel.delivery_status === "rider_assigned"  && (
                     <button
-                      onClick={() => handlePickedUp(parcel._id)} 
+                      onClick={() => handlePickedUp(parcel._id, parcel)} 
                       className="bg-primary  text-slate-800 cursor-pointer px-3 py-1 rounded"
                     >
                       Picked Up
@@ -124,7 +143,7 @@ const AssignedParcels = () => {
 
                   {parcel.delivery_status === "in-transit" && (
                     <button
-                      onClick={() => handleDelivered(parcel._id)}
+                      onClick={() => handleDelivered(parcel._id, parcel)}
                       className="bg-primary text-slate-800 cursor-pointer px-3 py-1 rounded"
                     >
                       Delivered

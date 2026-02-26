@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import useAuth from "../../Hooks/useAuth";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import { useNavigate } from "react-router";
+import useTrackingLogger from "../../Hooks/useTrackingLogger";
 
 const generateTrackingId = () => {
   const date = new Date().toISOString().slice(0, 10).replace(/-/g, "");
@@ -17,6 +18,7 @@ const SendParcel = () => {
   const { register, handleSubmit, watch, reset } = useForm();
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+  const {logTracking} = useTrackingLogger()
   const navigate = useNavigate()
 
   const parcelType = watch("type");
@@ -61,7 +63,7 @@ const SendParcel = () => {
     return basePrice + extraWeightCost + outsideExtra;
   };
 
-  const onSubmit = (data) => {
+  const onSubmit =  (data) => {
     const cost = calculateDeliveryCost(data);
 
     Swal.fire({
@@ -83,21 +85,21 @@ const SendParcel = () => {
       cancelButtonText: "Cancel",
       confirmButtonColor: "#22c55e", // Tailwind green-500
       cancelButtonColor: "#ef4444", // red-500
-    }).then((result) => {
+    }).then ( async (result) => {
       if (result.isConfirmed) {
+        const trackingId = generateTrackingId()
         const finalData = {
-          tracking_id: generateTrackingId(),
+          tracking_id: trackingId,
           ...data,
           delivery_cost: cost,
           create_by: user.email,
           payment_status: "unpaid",
           delivery_status: "not collected",
           creation_date: new Date().toISOString(),
-        };
-
+        }; 
         console.log("Saved Parcel:", finalData);
         // 🔁 API CALL HERE
-        axiosSecure.post("/parcels", finalData).then((res) => {
+        axiosSecure.post("/parcels", finalData).then( async (res) => {
           console.log(res.data);
           if (res.data.insertedId) {
             Swal.fire({
@@ -107,6 +109,11 @@ const SendParcel = () => {
               timer:1500,
               confirmButtonColor: "#22c55e",
             });
+            await logTracking({
+              tracking_id: trackingId,
+              status: "parcel-created",
+              location: finalData.sender_center,
+            })
             navigate('/dashboard/myparcels')
           }
         });

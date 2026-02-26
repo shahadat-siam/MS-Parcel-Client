@@ -7,6 +7,7 @@ import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 import Loader from '../../Shared/Loader/Loadder';
 import useAuth from '../../../Hooks/useAuth';
 import Swal from 'sweetalert2';
+import useTrackingLogger from '../../../Hooks/useTrackingLogger';
 
 const PaymentForm = () => {
     const stripe = useStripe()
@@ -15,6 +16,7 @@ const PaymentForm = () => {
     const {user} = useAuth()
     const {id} = useParams()
     const axiosSecure = useAxiosSecure()
+    const {logTracking} = useTrackingLogger()
     const navigate = useNavigate()
 
     const {data: parcelInfo = {}, isPending} = useQuery({
@@ -97,6 +99,10 @@ const PaymentForm = () => {
                         title: 'payment Success',
                         html: `<strong>Trsnsaction ID: ${result.paymentIntent.id}</strong>`,
                         confirmButtonText: 'Go to my parcels'
+                    })
+                     await logTracking({
+                        tracking_id: parcelInfo.tracking_id,
+                        status: "payment-completed" , 
                     })
                     navigate('/dashboard/myparcels')
                 }

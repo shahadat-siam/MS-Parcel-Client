@@ -3,10 +3,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import Loader from "../../Shared/Loader/Loadder";
+import useTrackingLogger from "../../../Hooks/useTrackingLogger";
 
 const AssignRider = () => {
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
+  const {logTracking} = useTrackingLogger()
 
   // 🔥 FIX 1: must be null (not '')
   const [selectedParcel, setSelectedParcel] = useState(null);
@@ -49,20 +51,24 @@ const AssignRider = () => {
         delivery_status: "rider_assigned",
       };
 
-      const res = await axiosSecure.patch(`/parcels/assign-rider/${parcelId}`,payload );
+      const res = await axiosSecure.patch(`/parcels/assign-rider/${parcelId}`,payload );  
       return res.data;
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       Swal.fire({
         icon: "success",
         title: "Rider Assigned Successfully!",
         timer: 1500,
         showConfirmButton: false,
       });
-
+ 
       setIsModalOpen(false);
       setSelectedParcel(null);
       queryClient.invalidateQueries(["assignableParcels"]);
+      await logTracking({
+        tracking_id: selectedParcel.tracking_id,
+        status: "rider-assigned", 
+      });
     },
   });
 
